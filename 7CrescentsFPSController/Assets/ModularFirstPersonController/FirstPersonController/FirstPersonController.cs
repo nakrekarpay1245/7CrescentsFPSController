@@ -7,7 +7,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-//using UnityEngine.UI;
+using UnityEngine.UI;
 
 #if UNITY_EDITOR
     using UnityEditor;
@@ -37,7 +37,7 @@ public class FirstPersonController : MonoBehaviour
     // Internal Variables
     private float yaw = 0.0f;
     private float pitch = 0.0f;
-    //private Image crosshairObject;
+    private Image crosshairObject;
 
     #region Camera Zoom Variables
 
@@ -76,8 +76,8 @@ public class FirstPersonController : MonoBehaviour
     // Sprint Bar
     public bool useSprintBar = true;
     public bool hideBarWhenFull = true;
-    //public Image sprintBarBG;
-    //public Image sprintBar;
+    public Image sprintBarBG;
+    public Image sprintBar;
     public float sprintBarWidthPercent = .3f;
     public float sprintBarHeightPercent = .015f;
 
@@ -135,7 +135,7 @@ public class FirstPersonController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
 
-        //crosshairObject = GetComponentInChildren<Image>();
+        crosshairObject = GetComponentInChildren<Image>();
 
         // Set internal variables
         playerCamera.fieldOfView = fov;
@@ -158,12 +158,12 @@ public class FirstPersonController : MonoBehaviour
 
         if(crosshair)
         {
-            //crosshairObject.sprite = crosshairImage;
-            //crosshairObject.color = crosshairColor;
+            crosshairObject.sprite = crosshairImage;
+            crosshairObject.color = crosshairColor;
         }
         else
         {
-            //crosshairObject.gameObject.SetActive(false);
+            crosshairObject.gameObject.SetActive(false);
         }
 
         #region Sprint Bar
@@ -172,8 +172,8 @@ public class FirstPersonController : MonoBehaviour
 
         if(useSprintBar)
         {
-            //sprintBarBG.gameObject.SetActive(true);
-            //sprintBar.gameObject.SetActive(true);
+            sprintBarBG.gameObject.SetActive(true);
+            sprintBar.gameObject.SetActive(true);
 
             float screenWidth = Screen.width;
             float screenHeight = Screen.height;
@@ -181,19 +181,19 @@ public class FirstPersonController : MonoBehaviour
             sprintBarWidth = screenWidth * sprintBarWidthPercent;
             sprintBarHeight = screenHeight * sprintBarHeightPercent;
 
-            //sprintBarBG.rectTransform.sizeDelta = new Vector3(sprintBarWidth, sprintBarHeight, 0f);
-            //sprintBar.rectTransform.sizeDelta = new Vector3(sprintBarWidth - 2, sprintBarHeight - 2, 0f);
+            sprintBarBG.rectTransform.sizeDelta = new Vector3(sprintBarWidth, sprintBarHeight, 0f);
+            sprintBar.rectTransform.sizeDelta = new Vector3(sprintBarWidth - 2, sprintBarHeight - 2, 0f);
 
-            //if(hideBarWhenFull)
-            //{
-            //    sprintBarCG.alpha = 0;
-            //}
+            if (hideBarWhenFull)
+            {
+                sprintBarCG.alpha = 0;
+            }
         }
-        //else
-        //{
-        //    sprintBarBG.gameObject.SetActive(false);
-        //    sprintBar.gameObject.SetActive(false);
-        //}
+        else
+        {
+            sprintBarBG.gameObject.SetActive(false);
+            sprintBar.gameObject.SetActive(false);
+        }
 
         #endregion
     }
@@ -317,7 +317,7 @@ public class FirstPersonController : MonoBehaviour
             if(useSprintBar && !unlimitedSprint)
             {
                 float sprintRemainingPercent = sprintRemaining / sprintDuration;
-                //sprintBar.transform.localScale = new Vector3(sprintRemainingPercent, 1f, 1f);
+                sprintBar.transform.localScale = new Vector3(sprintRemainingPercent, 1f, 1f);
             }
         }
 
@@ -408,10 +408,10 @@ public class FirstPersonController : MonoBehaviour
                         Crouch();
                     }
 
-                    //if (hideBarWhenFull && !unlimitedSprint)
-                    //{
-                    //    sprintBarCG.alpha += 5 * Time.deltaTime;
-                    //}
+                    if (hideBarWhenFull && !unlimitedSprint)
+                    {
+                        sprintBarCG.alpha += 5 * Time.deltaTime;
+                    }
                 }
 
                 rb.AddForce(velocityChange, ForceMode.VelocityChange);
@@ -421,10 +421,10 @@ public class FirstPersonController : MonoBehaviour
             {
                 isSprinting = false;
 
-                //if (hideBarWhenFull && sprintRemaining == sprintDuration)
-                //{
-                //    sprintBarCG.alpha -= 3 * Time.deltaTime;
-                //}
+                if (hideBarWhenFull && sprintRemaining == sprintDuration)
+                {
+                    sprintBarCG.alpha -= 3 * Time.deltaTime;
+                }
 
                 targetVelocity = transform.TransformDirection(targetVelocity) * walkSpeed;
 
@@ -634,10 +634,10 @@ public class FirstPersonController : MonoBehaviour
         fpc.sprintKey = (KeyCode)EditorGUILayout.EnumPopup(new GUIContent("Sprint Key", "Determines what key is used to sprint."), fpc.sprintKey);
         fpc.sprintSpeed = EditorGUILayout.Slider(new GUIContent("Sprint Speed", "Determines how fast the player will move while sprinting."), fpc.sprintSpeed, fpc.walkSpeed, 20f);
 
-        //GUI.enabled = !fpc.unlimitedSprint;
+        GUI.enabled = !fpc.unlimitedSprint;
         fpc.sprintDuration = EditorGUILayout.Slider(new GUIContent("Sprint Duration", "Determines how long the player can sprint while unlimited sprint is disabled."), fpc.sprintDuration, 1f, 20f);
         fpc.sprintCooldown = EditorGUILayout.Slider(new GUIContent("Sprint Cooldown", "Determines how long the recovery time is when the player runs out of sprint."), fpc.sprintCooldown, .1f, fpc.sprintDuration);
-        //GUI.enabled = true;
+        GUI.enabled = true;
 
         fpc.sprintFOV = EditorGUILayout.Slider(new GUIContent("Sprint FOV", "Determines the field of view the camera changes to while sprinting."), fpc.sprintFOV, fpc.fov, 179f);
         fpc.sprintFOVStepTime = EditorGUILayout.Slider(new GUIContent("Step Time", "Determines how fast the FOV transitions while sprinting."), fpc.sprintFOVStepTime, .1f, 20f);
@@ -655,12 +655,12 @@ public class FirstPersonController : MonoBehaviour
 
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.PrefixLabel(new GUIContent("Bar BG", "Object to be used as sprint bar background."));
-            //fpc.sprintBarBG = (Image)EditorGUILayout.ObjectField(fpc.sprintBarBG, typeof(Image), true);
+            fpc.sprintBarBG = (Image)EditorGUILayout.ObjectField(fpc.sprintBarBG, typeof(Image), true);
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.PrefixLabel(new GUIContent("Bar", "Object to be used as sprint bar foreground."));
-            //fpc.sprintBar = (Image)EditorGUILayout.ObjectField(fpc.sprintBar, typeof(Image), true);
+            fpc.sprintBar = (Image)EditorGUILayout.ObjectField(fpc.sprintBar, typeof(Image), true);
             EditorGUILayout.EndHorizontal();
 
 
