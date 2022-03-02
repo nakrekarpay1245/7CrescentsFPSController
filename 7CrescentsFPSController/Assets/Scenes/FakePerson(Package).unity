@@ -5794,7 +5794,6 @@ MonoBehaviour:
   maxLookAngle: 50
   lockCursor: 1
   crosshair: 1
-  enableZoom: 1
   holdToZoom: 0
   zoomKey: 324
   zoomFOV: 30
@@ -5802,7 +5801,6 @@ MonoBehaviour:
   playerCanMove: 1
   walkSpeed: 5
   maxVelocityChange: 10
-  enableSprint: 1
   unlimitedSprint: 0
   sprintKey: 304
   sprintSpeed: 7
@@ -5810,16 +5808,13 @@ MonoBehaviour:
   sprintCooldown: 0.5
   sprintFOV: 80
   sprintFOVStepTime: 10
-  useSprintBar: 1
   hideBarWhenFull: 1
   sprintBarBG: {fileID: 1047966378}
   sprintBar: {fileID: 1264118067}
   sprintBarWidthPercent: 0.3
   sprintBarHeightPercent: 0.015
-  enableJump: 1
   jumpKey: 32
   jumpPower: 5
-  enableCrouch: 1
   holdToCrouch: 1
   crouchKey: 306
   crouchHeight: 0.75

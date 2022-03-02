@@ -1,11 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 #if UNITY_EDITOR
 using UnityEditor;
-using System.Net;
 #endif
 
 public class FakePersonController : MonoBehaviour
@@ -35,7 +32,7 @@ public class FakePersonController : MonoBehaviour
 
     #region Camera Zoom Variables
 
-    public bool enableZoom = true;
+    //public bool enableZoom = true;
     public bool holdToZoom = false;
     public KeyCode zoomKey = KeyCode.Mouse1;
     public float zoomFOV = 30f;
@@ -60,7 +57,7 @@ public class FakePersonController : MonoBehaviour
 
     #region Sprint
 
-    public bool enableSprint = true;
+    //public bool enableSprint = true;
     public bool unlimitedSprint = false;
     public KeyCode sprintKey = KeyCode.LeftShift;
     public float sprintSpeed = 7f;
@@ -70,7 +67,7 @@ public class FakePersonController : MonoBehaviour
     public float sprintFOVStepTime = 10f;
 
     // Sprint Bar
-    public bool useSprintBar = true;
+    //public bool useSprintBar = true;
     public bool hideBarWhenFull = true;
     public Image sprintBarBG;
     public Image sprintBar;
@@ -90,7 +87,7 @@ public class FakePersonController : MonoBehaviour
 
     #region Jump
 
-    public bool enableJump = true;
+    //public bool enableJump = true;
     public KeyCode jumpKey = KeyCode.Space;
     public float jumpPower = 5f;
 
@@ -101,7 +98,7 @@ public class FakePersonController : MonoBehaviour
 
     #region Crouch
 
-    public bool enableCrouch = true;
+    //public bool enableCrouch = true;
     public bool holdToCrouch = true;
     public KeyCode crouchKey = KeyCode.LeftControl;
     public float crouchHeight = .75f;
@@ -166,30 +163,30 @@ public class FakePersonController : MonoBehaviour
 
         sprintBarParent = sprintBarBG.transform.parent.gameObject;
 
-        if (useSprintBar)
+        //if (useSprintBar)
+        //{
+        sprintBarBG.gameObject.SetActive(true);
+        sprintBar.gameObject.SetActive(true);
+
+        float screenWidth = Screen.width;
+        float screenHeight = Screen.height;
+
+        sprintBarWidth = screenWidth * sprintBarWidthPercent;
+        sprintBarHeight = screenHeight * sprintBarHeightPercent;
+
+        sprintBarBG.rectTransform.sizeDelta = new Vector3(sprintBarWidth, sprintBarHeight, 0f);
+        sprintBar.rectTransform.sizeDelta = new Vector3(sprintBarWidth - 2, sprintBarHeight - 2, 0f);
+
+        if (hideBarWhenFull)
         {
-            sprintBarBG.gameObject.SetActive(true);
-            sprintBar.gameObject.SetActive(true);
-
-            float screenWidth = Screen.width;
-            float screenHeight = Screen.height;
-
-            sprintBarWidth = screenWidth * sprintBarWidthPercent;
-            sprintBarHeight = screenHeight * sprintBarHeightPercent;
-
-            sprintBarBG.rectTransform.sizeDelta = new Vector3(sprintBarWidth, sprintBarHeight, 0f);
-            sprintBar.rectTransform.sizeDelta = new Vector3(sprintBarWidth - 2, sprintBarHeight - 2, 0f);
-
-            if (hideBarWhenFull)
-            {
-                sprintBarParent.SetActive(false);
-            }
+            sprintBarParent.SetActive(false);
         }
-        else
-        {
-            sprintBarBG.gameObject.SetActive(false);
-            sprintBar.gameObject.SetActive(false);
-        }
+        //}
+        //else
+        //{
+        //    sprintBarBG.gameObject.SetActive(false);
+        //    sprintBar.gameObject.SetActive(false);
+        //}
 
         #endregion
     }
@@ -221,107 +218,111 @@ public class FakePersonController : MonoBehaviour
 
         #region Camera Zoom
 
-        if (enableZoom)
+        //if (enableZoom)
+        //{
+        // Yakınlaştırma için tuşa basma
+        if (Input.GetKeyDown(zoomKey) && !holdToZoom && !isSprinting)
         {
-            // Yakınlaştırma için tuşa basma
-            if (Input.GetKeyDown(zoomKey) && !holdToZoom && !isSprinting)
+            if (!isZoomed)
             {
-                if (!isZoomed)
-                {
-                    isZoomed = true;
-                }
-                else
-                {
-                    isZoomed = false;
-                }
+                isZoomed = true;
             }
-
-            //Yakınlaştırma için basılı tutma 
-            if (holdToZoom && !isSprinting)
+            else
             {
-                if (Input.GetKeyDown(zoomKey))
-                {
-                    isZoomed = true;
-                }
-                else if (Input.GetKeyUp(zoomKey))
-                {
-                    isZoomed = false;
-                }
-            }
-
-            // Kamera görüş açısını pürüssüz(smooth-yavaşça) değiştirir
-            if (isZoomed)
-            {
-                playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView,
-                    zoomFOV, zoomStepTime * Time.deltaTime);
-            }
-            else if (!isZoomed && !isSprinting)
-            {
-                playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView,
-                    fieldOfView, zoomStepTime * Time.deltaTime);
+                isZoomed = false;
             }
         }
+
+        //Yakınlaştırma için basılı tutma 
+        if (holdToZoom && !isSprinting)
+        {
+            if (Input.GetKeyDown(zoomKey))
+            {
+                isZoomed = true;
+            }
+            else if (Input.GetKeyUp(zoomKey))
+            {
+                isZoomed = false;
+            }
+        }
+
+        // Kamera görüş açısını pürüssüz(smooth-yavaşça) değiştirir
+        if (isZoomed)
+        {
+            playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView,
+                zoomFOV, zoomStepTime * Time.deltaTime);
+        }
+        else if (!isZoomed && !isSprinting)
+        {
+            playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView,
+                fieldOfView, zoomStepTime * Time.deltaTime);
+        }
+        //}
 
         #endregion
         #endregion
 
         #region Sprint
 
-        if (enableSprint)
+        //if (enableSprint)
+        //{
+        if (isSprinting)
         {
-            if (isSprinting)
-            {
-                isZoomed = false;
-                playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView,
-                    sprintFOV, sprintFOVStepTime * Time.deltaTime);
+            isZoomed = false;
+            playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView,
+                sprintFOV, sprintFOVStepTime * Time.deltaTime);
 
-                //Sürat sırasında sürat'i belli bir süre sonra kapatın
-                if (!unlimitedSprint)
+            //Sürat sırasında sürat'i belli bir süre sonra kapatın
+            if (!unlimitedSprint)
+            {
+                sprintRemaining -= 1 * Time.deltaTime;
+                if (sprintRemaining <= 0)
                 {
-                    sprintRemaining -= 1 * Time.deltaTime;
-                    if (sprintRemaining <= 0)
-                    {
-                        isSprinting = false;
-                        isSprintCooldown = true;
-                    }
+                    isSprinting = false;
+                    isSprintCooldown = true;
                 }
-            }
-            else
-            {
-                // Sürat yapmayı aktifleştirir 
-                sprintRemaining = Mathf.Clamp(sprintRemaining += 1 * Time.deltaTime,
-                    0, sprintDuration);
-            }
-
-            // Sürat bekleme süresini yönetir
-            // Sürat bekleme süresi <= 0 ise sürat yapmayı engeller
-            if (isSprintCooldown)
-            {
-                sprintCooldown -= 1 * Time.deltaTime;
-                if (sprintCooldown <= 0)
-                {
-                    isSprintCooldown = false;
-                }
-            }
-            else
-            {
-                sprintCooldown = sprintCooldownReset;
-            }
-
-            // Süra tBarı Yönetir 
-            if (useSprintBar && !unlimitedSprint)
-            {
-                float sprintRemainingPercent = sprintRemaining / sprintDuration;
-                sprintBar.transform.localScale = new Vector3(sprintRemainingPercent, 1f, 1f);
             }
         }
+        else
+        {
+            // Sürat yapmayı aktifleştirir 
+            sprintRemaining = Mathf.Clamp(sprintRemaining += 1 * Time.deltaTime,
+                0, sprintDuration);
+        }
+
+        // Sürat bekleme süresini yönetir
+        // Sürat bekleme süresi <= 0 ise sürat yapmayı engeller
+        if (isSprintCooldown)
+        {
+            sprintCooldown -= 1 * Time.deltaTime;
+            if (sprintCooldown <= 0)
+            {
+                isSprintCooldown = false;
+            }
+        }
+        else
+        {
+            sprintCooldown = sprintCooldownReset;
+        }
+
+        // Süra tBarı Yönetir 
+        //if (useSprintBar && !unlimitedSprint)
+        //{
+        if (!unlimitedSprint)
+        {
+            float sprintRemainingPercent = sprintRemaining / sprintDuration;
+            sprintBar.transform.localScale = new Vector3(sprintRemainingPercent, 1f, 1f);
+        }
+        //}
 
         #endregion
 
         #region Jump
 
         // Zıplama için girdi(Input) alır ve zıplatır
-        if (enableJump && Input.GetKeyDown(jumpKey) && isGrounded)
+        //if (enableJump && Input.GetKeyDown(jumpKey) && isGrounded)
+        //{  
+        if (Input.GetKeyDown(jumpKey) && isGrounded)
         {
             Jump();
         }
@@ -330,24 +331,24 @@ public class FakePersonController : MonoBehaviour
 
         #region Crouch
 
-        if (enableCrouch)
+        //if (enableCrouch)
+        //{
+        if (Input.GetKeyDown(crouchKey) && !holdToCrouch)
         {
-            if (Input.GetKeyDown(crouchKey) && !holdToCrouch)
-            {
-                Crouch();
-            }
-
-            if (Input.GetKeyDown(crouchKey) && holdToCrouch)
-            {
-                isCrouched = false;
-                Crouch();
-            }
-            else if (Input.GetKeyUp(crouchKey) && holdToCrouch)
-            {
-                isCrouched = true;
-                Crouch();
-            }
+            Crouch();
         }
+
+        if (Input.GetKeyDown(crouchKey) && holdToCrouch)
+        {
+            isCrouched = false;
+            Crouch();
+        }
+        else if (Input.GetKeyUp(crouchKey) && holdToCrouch)
+        {
+            isCrouched = true;
+            Crouch();
+        }
+        //}
 
         #endregion
 
@@ -381,7 +382,9 @@ public class FakePersonController : MonoBehaviour
             }
 
             // Sürat anındaki hareket
-            if (enableSprint && Input.GetKey(sprintKey) && sprintRemaining > 0f && !isSprintCooldown)
+            //if (enableSprint && Input.GetKey(sprintKey) && sprintRemaining > 0f && !isSprintCooldown)
+            //{ 
+            if (Input.GetKey(sprintKey) && sprintRemaining > 0f && !isSprintCooldown)
             {
                 targetVelocity = transform.TransformDirection(targetVelocity) * sprintSpeed;
 
@@ -450,12 +453,12 @@ public class FakePersonController : MonoBehaviour
         {
             Debug.DrawRay(origin, direction * distance, Color.red);
             isGrounded = true;
-            Debug.Log("is Grounded True");
+            //Debug.Log("is Grounded True");
         }
         else
         {
             isGrounded = false;
-            Debug.Log("is Grounded False");
+            //Debug.Log("is Grounded False");
         }
     }
 
@@ -466,7 +469,7 @@ public class FakePersonController : MonoBehaviour
         {
             rigidbodyComponent.AddForce(0f, jumpPower, 0f, ForceMode.Impulse);
             isGrounded = false;
-            Debug.Log("is Grounded False");
+            //Debug.Log("is Grounded False");
         }
 
         if (isCrouched && !holdToCrouch)
@@ -602,18 +605,18 @@ public class FakePersonControllerEditor : Editor
             fpc.crosshair);
 
         // Yalnızca Crosshair aktifse görünür
-        if (fpc.crosshair)
-        {
-            EditorGUI.indentLevel++;
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.PrefixLabel(new GUIContent("Crosshair Görseli",
-                "Crosshair olarak kullanılacak Sprite"));
-            EditorGUILayout.EndHorizontal();
+        //if (fpc.crosshair)
+        //{
+        //    EditorGUI.indentLevel++;
+        //    EditorGUILayout.BeginHorizontal();
+        //    EditorGUILayout.PrefixLabel(new GUIContent("Crosshair Görseli",
+        //        "Crosshair olarak kullanılacak Sprite"));
+        //    EditorGUILayout.EndHorizontal();
 
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.EndHorizontal();
-            EditorGUI.indentLevel--;
-        }
+        //    EditorGUILayout.BeginHorizontal();
+        //    EditorGUILayout.EndHorizontal();
+        //    EditorGUI.indentLevel--;
+        //}
 
         EditorGUILayout.Space();
 
@@ -626,10 +629,10 @@ public class FakePersonControllerEditor : Editor
             fontSize = 13
         }, GUILayout.ExpandWidth(true));
 
-        fpc.enableZoom = EditorGUILayout.ToggleLeft(new GUIContent("Yakınlaştırmayı Etkinleştir",
-            "Oyuncunun oynarken yakınlaştırma yapıp yapamayacağını belirler."), fpc.enableZoom);
+        //fpc.enableZoom = EditorGUILayout.ToggleLeft(new GUIContent("Yakınlaştırmayı Etkinleştir",
+        //    "Oyuncunun oynarken yakınlaştırma yapıp yapamayacağını belirler."), fpc.enableZoom);
 
-        GUI.enabled = fpc.enableZoom;
+        //GUI.enabled = fpc.enableZoom;
         fpc.holdToZoom = EditorGUILayout.ToggleLeft(new GUIContent("Yakınlaştırma İçin Basılı Tut",
             "Yakınlaştırmak ve yakınlaştırmayı tutmak için oyuncunun yakınlaştırma" +
             " tuşunu basılı tutmasını gerektirir."),
@@ -679,10 +682,10 @@ public class FakePersonControllerEditor : Editor
         { alignment = TextAnchor.MiddleLeft, fontStyle = FontStyle.Bold, fontSize = 13 },
         GUILayout.ExpandWidth(true));
 
-        fpc.enableSprint = EditorGUILayout.ToggleLeft(new GUIContent("Sürat' i Aktifleştir",
-            "Oyuncunun koşmasına izin verilip verilmeyeceğini belirler."), fpc.enableSprint);
+        //fpc.enableSprint = EditorGUILayout.ToggleLeft(new GUIContent("Sürat' i Aktifleştir",
+        //    "Oyuncunun koşmasına izin verilip verilmeyeceğini belirler."), fpc.enableSprint);
 
-        GUI.enabled = fpc.enableSprint;
+        //GUI.enabled = fpc.enableSprint;
         fpc.unlimitedSprint = EditorGUILayout.ToggleLeft(new GUIContent("Sınırsız Sürat",
             "'Sürat Süresi'nin etkin olup olmadığını belirler." +
             " Bunu açmak, sınırsız sürat koşusuna izin verecektir."), fpc.unlimitedSprint);
@@ -713,12 +716,12 @@ public class FakePersonControllerEditor : Editor
             " olacağını belirler."),
             fpc.sprintFOVStepTime, .1f, 20f);
 
-        fpc.useSprintBar = EditorGUILayout.ToggleLeft(new GUIContent("Sürat Bar' ı Kullan",
-            "Varsayılan sürat barının ekranda görünüp görünmeyeceğini belirler."), fpc.useSprintBar);
+        //fpc.useSprintBar = EditorGUILayout.ToggleLeft(new GUIContent("Sürat Bar' ı Kullan",
+        //    "Varsayılan sürat barının ekranda görünüp görünmeyeceğini belirler."), fpc.useSprintBar);
 
-        // Yalnızca sprint çubuğu etkinleştirilmişse görünür
-        if (fpc.useSprintBar)
-        {
+        //// Yalnızca sprint çubuğu etkinleştirilmişse görünür
+        //if (fpc.useSprintBar)
+        //{
             EditorGUI.indentLevel++;
 
             EditorGUILayout.BeginHorizontal();
@@ -755,7 +758,7 @@ public class FakePersonControllerEditor : Editor
                 "Barın yüksekliğini belirtir"), fpc.sprintBarHeightPercent, .001f, .025f);
             EditorGUILayout.EndHorizontal();
             EditorGUI.indentLevel--;
-        }
+        //}
         GUI.enabled = true;
 
         EditorGUILayout.Space();
@@ -768,10 +771,10 @@ public class FakePersonControllerEditor : Editor
         { alignment = TextAnchor.MiddleLeft, fontStyle = FontStyle.Bold, fontSize = 13 },
         GUILayout.ExpandWidth(true));
 
-        fpc.enableJump = EditorGUILayout.ToggleLeft(new GUIContent("Zıplamayı Aktifleştir",
-            "Oyuncunun zıplamasına izin verilip verilmeyeceğini belirler."), fpc.enableJump);
+        //fpc.enableJump = EditorGUILayout.ToggleLeft(new GUIContent("Zıplamayı Aktifleştir",
+        //    "Oyuncunun zıplamasına izin verilip verilmeyeceğini belirler."), fpc.enableJump);
 
-        GUI.enabled = fpc.enableJump;
+        //GUI.enabled = fpc.enableJump;
         fpc.jumpKey = (KeyCode)EditorGUILayout.EnumPopup(new GUIContent("Zıplama Tuşu",
             "Zıplamak için hangi tuşun kullanılacağını belirler"), fpc.jumpKey);
 
@@ -789,10 +792,10 @@ public class FakePersonControllerEditor : Editor
         { alignment = TextAnchor.MiddleLeft, fontStyle = FontStyle.Bold, fontSize = 13 },
         GUILayout.ExpandWidth(true));
 
-        fpc.enableCrouch = EditorGUILayout.ToggleLeft(new GUIContent("Çökme/Eğilme 'yi aktifleştir",
-            "Oyuncunun çökme/eğilme yapıp yapamayacağını belirler"), fpc.enableCrouch);
+        //fpc.enableCrouch = EditorGUILayout.ToggleLeft(new GUIContent("Çökme/Eğilme 'yi aktifleştir",
+        //    "Oyuncunun çökme/eğilme yapıp yapamayacağını belirler"), fpc.enableCrouch);
 
-        GUI.enabled = fpc.enableCrouch;
+        //GUI.enabled = fpc.enableCrouch;
 
         fpc.holdToCrouch = EditorGUILayout.ToggleLeft(new GUIContent("Çökme/Eğilme için Basılı Tut",
             "Çökme/Eğilme için ve o halde kalmak için oyuncunun çökme/eğilme" +
